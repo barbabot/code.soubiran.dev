@@ -1,6 +1,7 @@
 name: CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -52,6 +53,9 @@ jobs:
 
       - name: Install browser for editor smoke test
         run: pnpm exec playwright install --with-deps chromium
+
+      - name: Verify development integration
+        run: pnpm run test:dev
 
       - name: Verify deployment artifact
         run: node scripts/verify-build.mjs
