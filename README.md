@@ -38,8 +38,9 @@ pnpm dev
   a Cloudflare Worker, **not** Nuxt's `server/` directory.
 
 The UI remains client-rendered because its editor state and AI model belong to
-the browser. During `pnpm dev`, Cloudflare's middleware handles only `/mcp`; Nuxt serves
-the editor, assets, and HMR. In production, Cloudflare serves the generated SPA
+the browser. During `pnpm dev`, Nuxt serves navigation requests and public assets
+before Cloudflare's catch-all middleware; `/mcp` still reaches the Worker. No
+application-level middleware scoping is needed. In production, Cloudflare serves the generated SPA
 assets and sends `/mcp` requests to the Worker first. The Worker also delegates non-MCP requests to its `ASSETS`
 binding.
 
@@ -81,8 +82,12 @@ machine, or deploy a prebuilt artifact with:
 pnpm exec wrangler deploy --config .output/code_soubiran_dev/wrangler.json
 ```
 
-Nuxt and its Vite server builder are pinned to 4.6.0 because the builder is highly
-experimental. Upgrade them together and rerun the deployment smoke test.
+Nuxt and its Vite server builder are pinned to the `pkg.pr.new` packages for
+[Nuxt commit d4595c3](https://github.com/nuxt/nuxt/commit/d4595c338d68ebdb5199283e37b67b203d4758d1),
+which fixes deploy-target plugin integration in development. These are temporary
+preview packages; replace both with a stable release containing the fix when
+available. Run `pnpm test:dev` to check SPA navigation, assets, and MCP without
+a middleware workaround, and rerun the deployment smoke test when upgrading.
 
 ## Sponsors
 
