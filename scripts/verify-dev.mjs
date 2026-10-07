@@ -58,9 +58,8 @@ try {
     assert.equal(response.status, 200, `Navigation ${path}`)
     assert.match(await response.text(), /id="__nuxt"/)
   }
-  const navigation = await fetch(origin, { headers: { 'sec-fetch-mode': 'navigate' } })
-  assert.equal(navigation.status, 200)
-  assert.match(await navigation.text(), /id="__nuxt"/)
+  // Chromium below exercises real navigation headers. Node fetch always sends
+  // sec-fetch-mode: cors, even if a caller tries to override it to navigate.
   const head = await fetch(origin, { method: 'HEAD', headers: { accept: 'text/html' } })
   assert.equal(head.status, 200)
   assert.equal(await head.text(), '')
