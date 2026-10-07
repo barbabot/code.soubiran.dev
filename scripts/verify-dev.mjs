@@ -111,8 +111,10 @@ finally {
       process.kill(-server.pid, 'SIGTERM')
     }
     catch (error) {
-      if (error.code !== 'ESRCH')
-        throw error
+      if (error.code !== 'ESRCH') {
+        console.error('Could not stop Nuxt process group:', error)
+        process.exitCode = 1
+      }
     }
   }
 }

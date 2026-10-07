@@ -2,11 +2,6 @@ name: CI
 
 on:
   workflow_dispatch:
-    inputs:
-      refresh_lockfile:
-        description: Regenerate and upload the lockfile before validation
-        type: boolean
-        default: false
   push:
     branches:
       - main
@@ -37,17 +32,6 @@ jobs:
         with:
           node-version: 24.15.0
           cache: pnpm
-
-      - name: Refresh lockfile
-        if: ${{ inputs.refresh_lockfile }}
-        run: pnpm install --lockfile-only --ignore-scripts
-
-      - name: Upload refreshed lockfile
-        if: ${{ inputs.refresh_lockfile }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: refreshed-lockfile
-          path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
